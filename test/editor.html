@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VexABC</title>
+    <link rel="stylesheet" href="lib/bootstrap.css" type="text/css" media="screen" />
+
+    <script type="text/javascript" src="../lib/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../lib/peg-0.7.0.min.js"></script>
+    <script type="text/javascript" src="../lib/vexflow-min.js"></script>
+
+    <script type="text/javascript" src="../src/vexabc.js"></script>
+    <script type="text/javascript" src="../src/vexabc-common.js"></script>
+    <script type="text/javascript" src="../src/vexabc-renderer.js"></script>
+  </head>
+
+  <body>
+    <h3>ABC notation parser and renderer for VexFlow</h3>
+    <form id="form" class="form-horizontal">
+      <textarea id="input" rows="16" style="width: 80%" placeholder="Type in ABC notation here"></textarea>
+      <button id="submit" type="submit" class="btn">Parse</button>
+    </form>
+    <div id="error">
+    </div>
+    <h3>Rendered notation</h3>
+    <canvas id="canvas">
+    </canvas>
+    <h3>Parser output</h3>
+    <pre id="output">
+    </pre>
+    <script type="text/javascript">
+      var parserDefinitionText;
+
+      $(document).ready(function() {
+        $.ajax({
+          url: "../src/vexabc.pegjs",
+          dataType: "text",
+          cache: false,
+          success: function(data) {
+            parserDefinitionText = data;
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            $("#error").html("<code>Error loading parser definition: " + errorThrown + "</code>");
+          }
+        });
+      });
+
+      $("#form").submit(function(e) {
+        e.preventDefault();
+        $("#error").text("");
+        $("#output").text("");
+
+        var input = $("#input").val();
+
+        var pegParser;
+        try {
+          pegParser = PEG.buildParser(parserDefinitionText);
+        } catch (e) {
+          $("#error").html("<code>Error in parser definition: " + e.message + "</code>");
+          return false;
+        }
+        
+        var vexAbcData;
+        try {
+          vexAbcData = pegParser.parse(input);
+        } catch (e) {
+          $("#error").html("<code>Invalid input: " + e.message + "</code>");
+          return false;
+        }
+        
+        $("#output").text(JSON.stringify(vexAbcData, null, 4));
+
+        var canvasElement = $("canvas")[0];
+
+        var vexAbcSettings = {
+        };
+        var vexAbcRenderer = new VexAbc.Renderer(vexAbcSettings);
+
+        vexAbcRenderer.transform(vexAbcData);
+        vexAbcRenderer.render(canvasElement);
+
+        return false;
+      });
+    </script>
+  </body>
+</html>
+

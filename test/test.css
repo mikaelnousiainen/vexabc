@@ -1,0 +1,80 @@
+.vexabc-test {
+  padding-left: 3em;
+  padding-right: 3em;
+  padding-top: 1em;
+}
+
+.vexabc-test-input {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vexabc-test-notation {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vexabc-test-parser-output {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The following has been shamelessly stolen from Bootstrap code examples :) */
+
+/* Base class */
+.vexabc-test-content {
+  position: relative;
+  margin: 15px 0;
+  padding: 39px 19px 14px;
+  *padding-top: 19px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+/* Echo out a label for the example */
+.vexabc-test-content-title {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  padding: 3px 7px;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  /*color: #9da0a4;*/
+  -webkit-border-radius: 4px 0 4px 0;
+     -moz-border-radius: 4px 0 4px 0;
+          border-radius: 4px 0 4px 0;
+}
+
+/* Remove spacing between an example and it's code */
+.vexabc-test-content + .prettyprint {
+  margin-top: -20px;
+  padding-top: 15px;
+}
+
+/* Tweaks */
+.vexabc-test-content > p:last-child {
+  margin-bottom: 0;
+}
+.vexabc-test-content .table,
+.vexabc-test-content .progress,
+.vexabc-test-content .well,
+.vexabc-test-content .alert,
+.vexabc-test-content .hero-unit,
+.vexabc-test-content .pagination,
+.vexabc-test-content .navbar,
+.vexabc-test-content > .nav,
+.vexabc-test-content blockquote {
+  margin-bottom: 5px;
+}
+.vexabc-test-content .pagination {
+  margin-top: 0;
+}
+
