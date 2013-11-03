@@ -13,6 +13,7 @@ VexAbc.TestSuite = function(parserDefinitionText, testOutputSelector) {
   this.pegParser = PEG.buildParser(parserDefinitionText);
   this.testOutputSelector = testOutputSelector;
   this.modules = [];
+  this.tests = [];
   this.testId = 0;
 }
 
@@ -20,8 +21,24 @@ VexAbc.TestSuite.prototype.registerModule = function(moduleDefinition) {
   this.modules.push(moduleDefinition);
 }
 
+VexAbc.TestSuite.prototype.registerTest = function(tests) {
+  this.tests.push(tests);
+}
+
 VexAbc.TestSuite.prototype.run = function() {
-  var i;
+  var i,j;
+
+  for (i = 0; i < this.tests.length; i++) {
+    var testDefinition = this.tests[i];
+    
+    this.testId++;
+    VexAbc.Util.fractionDurationToVexFlowDuration
+    var subTests = testDefinition.tests;
+    for (j = 0; j < subTests.length; j++) {
+      test(testDefinition.name + ": " + subTests[j].name, subTests[j].test);    
+    }
+  }
+
   for (i = 0; i < this.modules.length; i++) {
     var moduleDefinition = this.modules[i];
     this.runModule(moduleDefinition);

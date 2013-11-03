@@ -29,6 +29,7 @@
 
     <script>
       var moduleDefinitions = [];
+      var testDefinitions = [];
     </script>
 
     <script src="test-data.js"></script>
@@ -45,6 +46,9 @@
           return;
         }
 
+        for (i = 0; i < testDefinitions.length; i++) {
+          testSuite.registerTest(testDefinitions[i]);
+        }
         for (i = 0; i < moduleDefinitions.length; i++) {
           testSuite.registerModule(moduleDefinitions[i]);
         }
