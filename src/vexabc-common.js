@@ -59,7 +59,7 @@ VexAbc.Util.findEqualDataNotePitchIndices = function(dataNotes1, dataNotes2, fro
 
 VexAbc.Util.fractionDurationToVexFlowDuration = function(noteValue) {
 
-  var factor = Math.log(DURATION_RESOLUTION) / Math.LN2;
+  var factor = Math.log(VexAbc.Def.DURATION_RESOLUTION) / Math.LN2;
 
   var pow = Math.floor(Math.log(noteValue) / Math.LN2);
   
@@ -69,8 +69,21 @@ VexAbc.Util.fractionDurationToVexFlowDuration = function(noteValue) {
     remainder = remainder - Math.pow(2, pow - 1 - dots);
     dots = dots + 1;
   }
-
-  return {value: value, dots: dots};
+  var v = value.toString();
+  if (value === .5) {
+    v = "1/2";
+  } else if (value === .25) {
+    v = "1/4";
+  } else if (value === .125) {
+    v = "1/8";
+  } else if (value === 0.0625) {
+    v = "1/16";
+  } else if (value === 0.03125) {
+    v = "1/32";
+  } else if (value === 0.015625) {
+    v = "1/64";
+  }
+  return {value: v, dots: dots};
 
 };
 
