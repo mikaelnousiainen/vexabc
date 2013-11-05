@@ -448,3 +448,53 @@ moduleDefinitions.push({
   ]
 });
 
+testDefinitions.push({name: "Durations",
+  tests: [
+    {
+      name: "Standard Durations",
+      test: function() {
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 1),{ value: "1", dots: 0 },"Whole");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16),{ value: "2", dots: 3 },"Triple-Dotted Half"); 
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8),{ value: "2", dots: 2 },"Double-Dotted Half"); 
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4),{ value: "2", dots: 1 },"Dotted Half"); 
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2),{ value: "2", dots: 0 },"Half");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32),{ value: "4", dots: 3 },"Triple-Dotted Quarter");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16),{ value: "4", dots: 2 },"Double-Dotted Quarter");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8),{ value: "4", dots: 1 },"Dotted Quarter");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 4),{ value: "4", dots: 0 },"Quarter");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64),{ value: "8", dots: 3 },"Triple-Dotted Eighth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32),{ value: "8", dots: 2 },"Double-Dotted Eighth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 ),{ value: "8", dots: 1 },"Dotted Eighth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 8),{ value: "8", dots: 0 },"Eighth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128),{ value: "16", dots: 3 },"Triple-Dotted Sixteenth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64),{ value: "16", dots: 2 },"Double-Dotted Sixteenth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32),{ value: "16", dots: 1 },"Dotted Sixteenth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 16),{ value: "16", dots: 0 },"Sixteenth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128 + VexAbc.Def.DURATION_RESOLUTION / 256),{ value: "32", dots: 3 },"Triple-Dotted Thirtysecond");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128),{ value: "32", dots: 2 },"Double-Dotted Thirtysecond");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64),{ value: "32", dots: 1 },"Dotted Thirtysecond");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 32),{ value: "32", dots: 0 },"Thirtysecond");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128 + VexAbc.Def.DURATION_RESOLUTION / 256 + VexAbc.Def.DURATION_RESOLUTION / 512),{ value: "64", dots: 3 },"Triple-Dotted Sixtyfourth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128 + VexAbc.Def.DURATION_RESOLUTION / 256),{ value: "64", dots: 2 },"Double-Dotted Sixtyfourth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128),{ value: "64", dots: 1 },"Dotted Sixtyfourth");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 64),{ value: "64", dots: 0 },"Sixtyfourth");
+      }
+    },
+    {
+      name: "Irregular durations",
+      test: function() {
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + 
+          VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128 + VexAbc.Def.DURATION_RESOLUTION / 256 +
+          VexAbc.Def.DURATION_RESOLUTION / 512 + VexAbc.Def.DURATION_RESOLUTION / 1024 + VexAbc.Def.DURATION_RESOLUTION / 2048 + VexAbc.Def.DURATION_RESOLUTION / 4096
+          ),{ value: "2", dots: 11 },"Eleven dots");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION  - 1),{ value: "2", dots: 17},"Seventeen dots");
+      }
+    },
+    {
+      name: "Invalid durations",
+      test: function() {
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION * -1),{ value: "NaN", dots: 0 },"Negative duration");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(0),{ value: "Infinity", dots: 0 },"Zero duration");
+      }
+    }]
+});

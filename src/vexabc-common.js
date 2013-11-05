@@ -57,66 +57,32 @@ VexAbc.Util.findEqualDataNotePitchIndices = function(dataNotes1, dataNotes2, fro
   return result;
 }
 
-VexAbc.Def.fractionDurationToVexFlowDuration = {};
+VexAbc.Util.fractionDurationToVexFlowDuration = function(noteValue) {
 
-// TODO: This kind of array definition is really inflexible, so find a better way to deduce duration!
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 1] =
-    { value: "1", dots: 0 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16] =
-    { value: "2", dots: 3 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8] =
-    { value: "2", dots: 2 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4] =
-    { value: "2", dots: 1 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 2] =
-    { value: "2", dots: 0 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32] =
-    { value: "4", dots: 3 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16] =
-    { value: "4", dots: 2 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8] =
-    { value: "4", dots: 1 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 4] =
-    { value: "4", dots: 0 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64] =
-    { value: "8", dots: 3 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32] =
-    { value: "8", dots: 2 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16] =
-    { value: "8", dots: 1 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 8] =
-    { value: "8", dots: 0 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128] =
-    { value: "16", dots: 3 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64] =
-    { value: "16", dots: 2 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32] =
-    { value: "16", dots: 1 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 16] =
-    { value: "16", dots: 0 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128 + VexAbc.Def.DURATION_RESOLUTION / 256] =
-    { value: "32", dots: 3 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128] =
-    { value: "32", dots: 2 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64] =
-    { value: "32", dots: 1 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 32] =
-    { value: "32", dots: 0 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128 + VexAbc.Def.DURATION_RESOLUTION / 256 + VexAbc.Def.DURATION_RESOLUTION / 512] =
-    { value: "64", dots: 3 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128 + VexAbc.Def.DURATION_RESOLUTION / 256] =
-    { value: "64", dots: 2 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128] =
-    { value: "64", dots: 1 };
-VexAbc.Def.fractionDurationToVexFlowDuration[VexAbc.Def.DURATION_RESOLUTION / 64] =
-    { value: "64", dots: 0 };
+  var factor = Math.log(VexAbc.Def.DURATION_RESOLUTION) / Math.LN2;
 
-// TODO: How to handle unknown durations?
+  var pow = Math.floor(Math.log(noteValue) / Math.LN2);
+  
+  var value = Math.pow(2,factor - pow), remainder = noteValue - Math.pow(2,pow), dots = 0;
+
+  while (remainder > 0) {
+    remainder = remainder - Math.pow(2, pow - 1 - dots);
+    dots = dots + 1;
+  }
+  
+  if (value < 1) {
+    return null;
+  } else {
+    return {value: value.toString(), dots: dots};
+  }
+
+};
+
 VexAbc.Util.convertFractionDurationToVexFlowDuration = function(multiplier, noteValue) {
   var factor = VexAbc.Def.DURATION_RESOLUTION / noteValue;
   var durationTicks = multiplier * factor;
 
-  var result = VexAbc.Def.fractionDurationToVexFlowDuration[durationTicks];
+  var result = VexAbc.Util.fractionDurationToVexFlowDuration(durationTicks);
   if (!result) {
     return null;
   }
