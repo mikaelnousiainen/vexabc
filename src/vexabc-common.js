@@ -69,21 +69,12 @@ VexAbc.Util.fractionDurationToVexFlowDuration = function(noteValue) {
     remainder = remainder - Math.pow(2, pow - 1 - dots);
     dots = dots + 1;
   }
-  var v = value.toString();
-  if (value === .5) {
-    v = "1/2";
-  } else if (value === .25) {
-    v = "1/4";
-  } else if (value === .125) {
-    v = "1/8";
-  } else if (value === 0.0625) {
-    v = "1/16";
-  } else if (value === 0.03125) {
-    v = "1/32";
-  } else if (value === 0.015625) {
-    v = "1/64";
+  
+  if (value < 1) {
+    return null;
+  } else {
+    return {value: value.toString(), dots: dots};
   }
-  return {value: v, dots: dots};
 
 };
 
