@@ -1,12 +1,15 @@
 /*
  * VexABC - ABC notation parser and renderer for VexFlow
  *
- * Copyright (c) 2012 Mikael Nousiainen
+ * Copyright (c) 2012-2013 Mikael Nousiainen
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
+var moduleDefinitions = [];
+var testDefinitions = [];
 
 moduleDefinitions.push({
   name: "Header definitions",
@@ -16,32 +19,28 @@ moduleDefinitions.push({
       settings: { stavesPerLine: 2 },
       input: "\
 K:clef=treble\n\
-C2 z2 z4 | C D E F GABC'\n\
-"
+C2 z2 z4 | C D E F GABC'\n"
     },
     {
       name: "Alto clef",
       settings: { stavesPerLine: 2 },
       input: "\
 K:clef=alto\n\
-C2 z2 z4 | C D E F GABC'\n\
-"
+C2 z2 z4 | C D E F GABC'\n"
     },
     {
       name: "Tenor clef",
       settings: { stavesPerLine: 2 },
       input: "\
 K:clef=tenor\n\
-C2 z2 z4 | C D E F GABC'\n\
-"
+C2 z2 z4 | C D E F GABC'\n"
     },
     {
       name: "Bass clef",
       settings: { stavesPerLine: 2 },
       input: "\
 K:clef=bass\n\
-F,2 z2 z4 | C, D, E, F, G,A,B,C\n\
-"
+F,2 z2 z4 | C, D, E, F, G,A,B,C\n"
     },
     {
       name: "Clef changes",
@@ -58,40 +57,35 @@ F,2 z2 z4 | C, D, E, F, G,A,B,C |\n\
 [K:clef=treble] C2 z2 z4 | C D E F GABC' |\n\
 [K:clef=alto] C2 z2 z4 | C D E F GABC' |\n\
 [K:clef=tenor] C2 z2 z4 | C D E F GABC' |\n\
-[K:clef=bass] F,2 z2 z4 | C, D, E, F, G,A,B,C\n\
-"
+[K:clef=bass] F,2 z2 z4 | C, D, E, F, G,A,B,C\n"
     },
     {
       name: "Treble clef, F#-major key",
       settings: { stavesPerLine: 2 },
       input: "\
 K:F# clef=treble\n\
-C2 z2 z4 | C D E F GABC'\n\
-"
+C2 z2 z4 | C D E F GABC'\n"
     },
     {
       name: "Alto clef, Ab-minor key",
       settings: { stavesPerLine: 2 },
       input: "\
 K:Abm clef=alto\n\
-C2 z2 z4 | C D E F GABC'\n\
-"
+C2 z2 z4 | C D E F GABC'\n"
     },
     {
       name: "Tenor clef, F#-major key",
       settings: { stavesPerLine: 2 },
       input: "\
 K:F# clef=tenor\n\
-C2 z2 z4 | C D E F GABC'\n\
-"
+C2 z2 z4 | C D E F GABC'\n"
     },
     {
       name: "Bass clef, Ab-minor key",
       settings: { stavesPerLine: 2 },
       input: "\
 K:Abm clef=bass\n\
-C2 z2 z4 | C D E F GABC'\n\
-"
+C2 z2 z4 | C D E F GABC'\n"
     },
     {
       name: "Clef and key changes",
@@ -128,8 +122,7 @@ C2 z2 z4 | [K:Cm]C D E F GABC' |\n\
 C2 z2 z4 | [K:Fm]C D E F GABC' |\n\
 C2 z2 z4 | [K:Bbm]C D E F GABC' |\n\
 C2 z2 z4 | [K:Ebm]C D E F GABC' |\n\
-C2 z2 z4 | [K:Abm]C D E F GABC' |\n\
-"
+C2 z2 z4 | [K:Abm]C D E F GABC' |\n"
     },
     {
       name: "Meter: C (4/4)",
@@ -139,8 +132,7 @@ K:D clef=treble\n\
 M:C\n\
 |\n\
 M:4/4\n\
-|]\n\
-"
+|]\n"
     },
     {
       name: "Meter: C| (2/2)",
@@ -150,8 +142,7 @@ K:D clef=bass\n\
 M:C|\n\
 |\n\
 M:2/2\n\
-|]\n\
-"
+|]\n"
     },
     {
       name: "Meter changes",
@@ -165,8 +156,7 @@ C8|\n\
 [K:Am][M:7/8] E'EAEBE/C'E/|\n\
 D'DGDAD/BD/|\n\
 [M:12/16] D6|\n\
-[M:5/8] C8|]\n\
-"
+[M:5/8] C8|]\n"
     },
   ]
 });
@@ -198,8 +188,7 @@ L:1/16\n\
 L:1/8\n\
     A/4 A/2 A/ A A2 A3 A4 A6 A7 A8|]\n\
 L:1/4\n\
-A/8 A/4 A/2 A/ A A2 A3 A4|]\n\
-"
+A/8 A/4 A/2 A/ A A2 A3 A4|]\n"
     },
     {
       name: "Rests, invisible rests and multi-measure rests",
@@ -221,8 +210,7 @@ x/8 x/4 x/2 x/ x x2 x3 x4|]\n\
 z C z/2 D/2 z/4 D/4|]\n\
 x C x/2 D/2 x/4 D/4|]\n\
 Z A Z2 A Z3 A Z4|]\n\
-X A X2 A X3 A X4|]\n\
-"
+X A X2 A X3 A X4|]\n"
     },
     {
       name: "Accidentals",
@@ -232,8 +220,7 @@ X:1\n\
 T:Accidentals\n\
 M:C\n\
 K:C\n\
-__A _A =A ^A ^^A|]\n\
-",
+__A _A =A ^A ^^A|]\n"
     },
     {
       name: "Broken rhythm markers",
@@ -243,8 +230,7 @@ X:1\n\
 T:Broken rhythm markers\n\
 M:C\n\
 K:C\n\
-A>A A2>A2 A>>A A2>>>A2|]\n\
-",
+A>A A2>A2 A>>A A2>>>A2|]\n"
     },
     {
       name: "Beams",
@@ -255,8 +241,7 @@ T:Beams\n\
 M:C\n\
 K:C\n\
 A B c d AB cd|ABcd ABc2|\n\
-A/C/c/d/ A/4B/4C/4d/4|^d/8A/8_B,/8D/8\n\
-",
+A/C/c/d/ A/4B/4C/4d/4|^d/8A/8_B,/8D/8\n"
     },
     {
       name: "Tuplets",
@@ -268,8 +253,7 @@ M:C\n\
 K:C\n\
 (2AB (3ABA | (4ABAB (5ABABA | (6ABABAB (7ABABABA |\n\
 (2zB (3AzB | (4zBAz (5Az2zA | (3A2B2A2 (3A4B4A4 |\n\
-(3z2B2z2 | (3A2z2B2 | (3:2z2B2z2 | (3:4A2z2B2 \n\
-",
+(3z2B2z2 | (3A2z2B2 | (3:2z2B2z2 | (3:4A2z2B2 \n"
     },
     {
       name: "Ties",
@@ -281,8 +265,7 @@ M:C\n\
 K:C\n\
 C-C A2-A2 | C4- C4 |\n\
 [C2E2G2]-[CEG] | [DFA]-[DGB] |\n\
-[C2E2G2]- [CEG] | [DFA]- [DGB]\n\
-",
+[C2E2G2]- [CEG] | [DFA]- [DGB]\n"
     },
     {
       name: "Slurs",
@@ -295,8 +278,7 @@ K:C\n\
 (DEFG) |\n\
 ( D E F G ) |\n\
 (c (d e f) g a) |\n\
-(c d (e) f g a)\n\
-",
+(c d (e) f g a)\n"
     },
     {
       name: "Ties and slurs",
@@ -306,8 +288,7 @@ X:1\n\
 T:Ties and Slurs\n\
 M:C\n\
 K:C\n\
-(AA) (A(A)A) ((AA)A) (A|A) A-A A-A-A A2-|A4|]\n\
-",
+(AA) (A(A)A) ((AA)A) (A|A) A-A A-A-A A2-|A4|]\n"
     },
     {
       name: "Bar lines and repeats",
@@ -317,8 +298,7 @@ X:1\n\
 L:1/1\n\
 T:Bar lines and repeats\n\
 | || :| |: :|: :||: :: |\n\
-[| A |] [|] .| |\n\
-",
+[| A |] [|] .| |\n"
     },
     {
       name: "Variant endings",
@@ -331,8 +311,7 @@ T:Variant endings\n\
 |1 A :|[2 A :| [3 A |] \n\
 |1 A ||[2,4 B || [3,5-7,8,9-15 A |] \n\
 |1,15 A | A || |] \n\
-|2,16 A | A | |] \n\
-",
+|2,16 A | A | |] \n"
     },
     {
       name: "Grace notes",
@@ -342,8 +321,7 @@ X:1\n\
 T:Grace notes\n\
 M:6/8\n\
 K:C\n\
-{g}A3 A{g}AA|{gAGAG}A3 {g}A{d}A{e}A|]\n\
-",
+{g}A3 A{g}AA|{gAGAG}A3 {g}A{d}A{e}A|]\n"
     },
     {
       name: "Chords",
@@ -353,8 +331,7 @@ X:1\n\
 T:Chords\n\
 M:2/4\n\
 K:C\n\
-[CEGc] [C2G2] [CE][DF]|[D2F2][EG][FA] [A4d4]|]\n\
-",
+[CEGc] [C2G2] [CE][DF]|[D2F2][EG][FA] [A4d4]|]\n"
     },
     {
       name: "Chord symbols",
@@ -364,8 +341,7 @@ X:1\n\
 T:Chord symbols\n\
 M:C\n\
 K:C\n\
-"A"A "Gm7"D "Bb"F "F#"A|\n\
-',
+"A"A "Gm7"D "Bb"F "F#"A|\n'
     },
     {
       name: "Decoration shortcuts",
@@ -378,8 +354,7 @@ K:C\n\
 "_~"~A "_~"~c "_.".A "_.".c "_H"HA "_H"Hc "_L"LA "_L"Lc |\n\
 "_M"MA "_M"Mc "_O"OA "_O"Oc "_P"PA "_P"Pc "_S"SA "_S"Sc |\n\
 "_T"TA "_T"Tc "_u"uA "_u"uc "_v"vA "_v"vc |\n\
-(3.D.G.E |\n\
-',
+(3.D.G.E |\n'
     },
     {
       name: "Decorations",
@@ -405,8 +380,7 @@ L:1/1\n\
 !crescendo)!A | !<)!A | !diminuendo(!A | !>(!A |\n\
 !diminuendo)!A | !>)!A | !segno!A | !coda!A |\n\
 !D.S.!A | !D.C.!A | !dacoda!A | !dacapo!A |\n\
-!fine!A | !shortphrase!A | !mediumphrase!A | !longphrase!A |\n\
-',
+!fine!A | !shortphrase!A | !mediumphrase!A | !longphrase!A |\n'
     },
     {
       name: "Annotations",
@@ -416,8 +390,7 @@ X:1\n\
 T:Chord symbols\n\
 M:C\n\
 K:C\n\
-"^above"A "<left"D ">right"F "_below"A "@free"c||\n\
-',
+"^above"A "<left"D ">right"F "_below"A "@free"c||\n'
     },
   ]
 });
@@ -442,8 +415,7 @@ moduleDefinitions.push({
       settings: { stavesPerLine: 2 },
       input: '\
 "C"[CEGc] | "Gm7"[.=G,^c\'] |\n\
-"Gm7"(v.=G,2~^c\'2)\n\
-'
+"Gm7"(v.=G,2~^c\'2)\n'
     },
   ]
 });
@@ -454,9 +426,9 @@ testDefinitions.push({name: "Durations",
       name: "Standard Durations",
       test: function() {
         deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 1),{ value: "1", dots: 0 },"Whole");
-        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16),{ value: "2", dots: 3 },"Triple-Dotted Half"); 
-        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8),{ value: "2", dots: 2 },"Double-Dotted Half"); 
-        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4),{ value: "2", dots: 1 },"Dotted Half"); 
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16),{ value: "2", dots: 3 },"Triple-Dotted Half");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8),{ value: "2", dots: 2 },"Double-Dotted Half");
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4),{ value: "2", dots: 1 },"Dotted Half");
         deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2),{ value: "2", dots: 0 },"Half");
         deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + VexAbc.Def.DURATION_RESOLUTION / 32),{ value: "4", dots: 3 },"Triple-Dotted Quarter");
         deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16),{ value: "4", dots: 2 },"Double-Dotted Quarter");
@@ -483,7 +455,7 @@ testDefinitions.push({name: "Durations",
     {
       name: "Irregular durations",
       test: function() {
-        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 + 
+        deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION / 2 + VexAbc.Def.DURATION_RESOLUTION / 4 + VexAbc.Def.DURATION_RESOLUTION / 8 + VexAbc.Def.DURATION_RESOLUTION / 16 +
           VexAbc.Def.DURATION_RESOLUTION / 32 + VexAbc.Def.DURATION_RESOLUTION / 64 + VexAbc.Def.DURATION_RESOLUTION / 128 + VexAbc.Def.DURATION_RESOLUTION / 256 +
           VexAbc.Def.DURATION_RESOLUTION / 512 + VexAbc.Def.DURATION_RESOLUTION / 1024 + VexAbc.Def.DURATION_RESOLUTION / 2048 + VexAbc.Def.DURATION_RESOLUTION / 4096
           ),{ value: "2", dots: 11 },"Eleven dots");
@@ -496,5 +468,6 @@ testDefinitions.push({name: "Durations",
         deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(VexAbc.Def.DURATION_RESOLUTION * -1),{ value: "NaN", dots: 0 },"Negative duration");
         deepEqual(VexAbc.Util.fractionDurationToVexFlowDuration(0),{ value: "Infinity", dots: 0 },"Zero duration");
       }
-    }]
+    }
+  ]
 });

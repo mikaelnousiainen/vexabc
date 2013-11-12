@@ -1,23 +1,30 @@
 /*
  * VexABC - ABC notation parser and renderer for VexFlow
  *
- * Copyright (c) 2012 Mikael Nousiainen
+ * Copyright (c) 2012-2013 Mikael Nousiainen
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-VexAbc.Renderer = function(settings) {
-  this.init(settings);
-}
+var _ = require("underscore");
 
-VexAbc.Renderer.prototype.init = function(settings) {
+var Vex = require("vexflow");
+
+var VexAbcDef = require("./vexabc-def");
+var VexAbcUtil = require("./vexabc-util");
+
+var VexAbcRenderer = function(settings) {
+  this.init(settings);
+};
+
+VexAbcRenderer.prototype.init = function(settings) {
   this.initSettings(settings);
   this.reset();
-}
+};
 
-VexAbc.Renderer.prototype.initSettings = function(settings) {
+VexAbcRenderer.prototype.initSettings = function(settings) {
   this.settings = {
     width: 1000,
     height: undefined,
@@ -30,16 +37,16 @@ VexAbc.Renderer.prototype.initSettings = function(settings) {
   };
 
   if (settings) {
-    $.extend(this.settings, settings);
+    _.extend(this.settings, settings);
   }
 
   this.settings.contentWidth =
       this.settings.width - this.settings.horizontalPadding;
   this.settings.staveWidth =
       this.settings.contentWidth / this.settings.stavesPerLine;
-}
+};
 
-VexAbc.Renderer.prototype.reset = function() {
+VexAbcRenderer.prototype.reset = function() {
   this.elements = {
     staves: [],
     beams: [],
@@ -62,26 +69,28 @@ VexAbc.Renderer.prototype.reset = function() {
     voltaBeginMeasure: -1,
     contentHeight: 0
   };
-}
+};
 
-VexAbc.Renderer.prototype.getElements = function() {
+VexAbcRenderer.prototype.getElements = function() {
   return this.elements;
-}
+};
 
 // TODO: create conversion+process function for decorations
 
-VexAbc.Renderer.prototype.getInformationFieldValue = function(data, name) {
+VexAbcRenderer.prototype.getInformationFieldValue = function(data, name) {
   var header = data.header;
-  for (var i = 0; i < header.length; i++) {
+  var i;
+
+  for (i = 0; i < header.length; i++) {
     var field = header[i];
-    if (field.name == name) {
+    if (field.name === name) {
       return field.value;
     }
   }
   return null;
-}
+};
 
-VexAbc.Renderer.prototype.applyKeySignature = function(stave, key) {
+VexAbcRenderer.prototype.applyKeySignature = function(stave, key) {
   if (key) {
     // TODO: use mapping for keys and clefs, include support for different modes
     if (key.clef) {
@@ -101,9 +110,9 @@ VexAbc.Renderer.prototype.applyKeySignature = function(stave, key) {
   }
 
   this.state.staveKeySignatureAdded = true;
-}
+};
 
-VexAbc.Renderer.prototype.applyTimeSignature = function(stave, meter) {
+VexAbcRenderer.prototype.applyTimeSignature = function(stave, meter) {
   if (meter) {
     // TODO: use mapping for C / C| ? handling complex 2+3+2 ?
     if (meter.symbol) {
@@ -113,12 +122,12 @@ VexAbc.Renderer.prototype.applyTimeSignature = function(stave, meter) {
     }
     this.state.staveTimeSignatureAdded = true;
   }
-}
+};
 
-VexAbc.Renderer.prototype.applyStaveDefaults = function() {
+VexAbcRenderer.prototype.applyStaveDefaults = function() {
   var stave = this.state.stave;
 
-  if ((this.state.staveCount - 1) % this.settings.stavesPerLine == 0) {
+  if ((this.state.staveCount - 1) % this.settings.stavesPerLine === 0) {
     // Add default key and time signatures at beginning of each row if needed
     if (!this.state.staveKeySignatureAdded) {
       this.applyKeySignature(stave, this.state.key);
@@ -127,16 +136,16 @@ VexAbc.Renderer.prototype.applyStaveDefaults = function() {
       this.applyTimeSignature(stave, this.state.meter);
     }
   }
-}
+};
 
-VexAbc.Renderer.prototype.newStave = function() {
+VexAbcRenderer.prototype.newStave = function() {
   var x, y;
   var previousStave = this.state.stave;
 
   if (previousStave) {
     this.applyStaveDefaults();
 
-    if (this.state.staveCountOnLine == 0) {
+    if (this.state.staveCountOnLine === 0) {
       x = 10;
       y = previousStave.y + previousStave.height + this.settings.verticalPaddingForStave;
     } else {
@@ -150,7 +159,7 @@ VexAbc.Renderer.prototype.newStave = function() {
 
   var stave = new Vex.Flow.Stave(x, y, this.settings.staveWidth);
 
-  if (this.state.staveCountOnLine == 0) {
+  if (this.state.staveCountOnLine === 0) {
     this.state.contentHeight += stave.height + this.settings.verticalPaddingForStave;
   }
 
@@ -163,9 +172,9 @@ VexAbc.Renderer.prototype.newStave = function() {
   this.state.staveCount++;
   this.state.staveCountOnLine =
       (this.state.staveCount % this.settings.stavesPerLine);
-}
+};
 
-VexAbc.Renderer.prototype.newVoice = function(id) {
+VexAbcRenderer.prototype.newVoice = function(id) {
   var beats = 4;
   var beatValue = 4;
 
@@ -183,28 +192,28 @@ VexAbc.Renderer.prototype.newVoice = function(id) {
   voice.setStrict(false);
 
   this.state.voices[id] = voice;
-}
+};
 
-VexAbc.Renderer.prototype.processInformationField = function(informationField) {
+VexAbcRenderer.prototype.processInformationField = function(informationField) {
   var n = informationField.name;
 
-  if (n == "K") {
+  if (n === "K") {
     var key = informationField.value;
     this.applyKeySignature(this.state.stave, key);
     this.state.key = key;
-  } else if (n == "M") {
+  } else if (n === "M") {
     var meter = informationField.value;
     this.applyTimeSignature(this.state.stave, meter);
     this.state.meter = meter;
   }
-}
+};
 
 // TODO: format regular annotations, so that first one is above, second below (check the ABC spec)
-VexAbc.Renderer.prototype.createAnnotation = function(text, style, verticalPosition, justification) {
+VexAbcRenderer.prototype.createAnnotation = function(text, style, verticalPosition, justification) {
   var annotation = new Vex.Flow.Annotation(text);
 
   if (!style) {
-    style = VexAbc.Util.getVexFlowAnnotationStyle("text");
+    style = VexAbcUtil.getVexFlowAnnotationStyle("text");
   }
 
   annotation.setFont(style.fontName, style.fontSize, style.fontWeight);
@@ -215,13 +224,13 @@ VexAbc.Renderer.prototype.createAnnotation = function(text, style, verticalPosit
 
   console.log(verticalPosition);
 
-  if (verticalPosition == "above") {
+  if (verticalPosition === "above") {
     annotation.setVerticalJustification(Vex.Flow.Annotation.VerticalJustify.TOP);
-  } else if (verticalPosition == "center") {
+  } else if (verticalPosition === "center") {
     annotation.setVerticalJustification(Vex.Flow.Annotation.VerticalJustify.CENTER);
-  } else if (verticalPosition == "center-stem") {
+  } else if (verticalPosition === "center-stem") {
     annotation.setVerticalJustification(Vex.Flow.Annotation.VerticalJustify.CENTER_STEM);
-  } else if (verticalPosition == "below") {
+  } else if (verticalPosition === "below") {
     annotation.setVerticalJustification(Vex.Flow.Annotation.VerticalJustify.BOTTOM);
   } else {
     annotation.setVerticalJustification(Vex.Flow.Annotation.VerticalJustify.TOP);
@@ -234,31 +243,31 @@ VexAbc.Renderer.prototype.createAnnotation = function(text, style, verticalPosit
     justification = style.justification;
   }
 
-  if (justification == "left") {
+  if (justification === "left") {
     annotation.setJustification(Vex.Flow.Annotation.Justify.LEFT);
-  } else if (justification == "center") {
+  } else if (justification === "center") {
     annotation.setJustification(Vex.Flow.Annotation.Justify.CENTER);
-  } else if (justification == "right") {
+  } else if (justification === "right") {
     annotation.setJustification(Vex.Flow.Annotation.Justify.RIGHT);
   } else {
     annotation.setJustification(Vex.Flow.Annotation.Justify.CENTER);
   }
 
   return annotation;
-}
+};
 
-VexAbc.Renderer.prototype.processBar = function(dataBar) {
+VexAbcRenderer.prototype.processBar = function(dataBar) {
   if (dataBar.repeat) {
-    if (dataBar.repeatType == "end" ||
-        dataBar.repeatType == "end+begin") {
+    if (dataBar.repeatType === "end" ||
+        dataBar.repeatType === "end+begin") {
       this.state.stave.setEndBarType(Vex.Flow.Barline.type.REPEAT_END);
     }
     this.endVolta(dataBar);
   } else {
-    if (dataBar.lineType == "end") {
+    if (dataBar.lineType === "end") {
       this.state.stave.setEndBarType(Vex.Flow.Barline.type.END);
       this.endVolta(dataBar);
-    } else if (dataBar.lineType == "double") {
+    } else if (dataBar.lineType === "double") {
       this.state.stave.setEndBarType(Vex.Flow.Barline.type.DOUBLE);
       this.endVolta(dataBar);
     }
@@ -272,28 +281,28 @@ VexAbc.Renderer.prototype.processBar = function(dataBar) {
   this.state.voices = {};
   
   this.newStave();
-  this.newVoice(VexAbc.Def.DEFAULT_VOICE_ID);
+  this.newVoice(VexAbcDef.DEFAULT_VOICE_ID);
 
   if (dataBar.repeat) {
-    if (dataBar.repeatType == "begin" ||
-        dataBar.repeatType == "end+begin") {
+    if (dataBar.repeatType === "begin" ||
+        dataBar.repeatType === "end+begin") {
       this.state.stave.setBegBarType(Vex.Flow.Barline.type.REPEAT_BEGIN);
     }
   } else {
-    if (dataBar.lineType == "begin") {
+    if (dataBar.lineType === "begin") {
       this.state.stave.setBegBarType(Vex.Flow.Barline.type.END);
     }
   }
 
   this.beginVoltaIfNeeded(dataBar);
 
-  this.elements.staves.push({ 
+  this.elements.staves.push({
     stave: this.state.stave,
     voices: this.state.voices
   });
-}
+};
 
-VexAbc.Renderer.prototype.beginVoltaIfNeeded = function(dataElement) {
+VexAbcRenderer.prototype.beginVoltaIfNeeded = function(dataElement) {
   var variantEndings;
 
   if (dataElement.type === "bar") {
@@ -313,7 +322,8 @@ VexAbc.Renderer.prototype.beginVoltaIfNeeded = function(dataElement) {
 
   var text = "";
 
-  for (var i = 0; i < variantEndings.length; i++) {
+  var i;
+  for (i = 0; i < variantEndings.length; i++) {
     var v = variantEndings[i];
     text += v.first;
     if (v.last) {
@@ -324,14 +334,12 @@ VexAbc.Renderer.prototype.beginVoltaIfNeeded = function(dataElement) {
     }
   }
 
-  var stave = this.state.stave;
-
   this.state.volta = true;
   this.state.voltaBeginMeasure = this.state.staveCount;
   this.state.voltaText = text;
-}
+};
 
-VexAbc.Renderer.prototype.continueVolta = function() {
+VexAbcRenderer.prototype.continueVolta = function() {
   if (!this.state.volta) {
     return;
   }
@@ -347,9 +355,9 @@ VexAbc.Renderer.prototype.continueVolta = function() {
 
   var stave = this.state.stave;
   stave.setVoltaType(type, text, 0);
-}
+};
 
-VexAbc.Renderer.prototype.endVolta = function() {
+VexAbcRenderer.prototype.endVolta = function() {
   if (!this.state.volta) {
     return;
   }
@@ -369,24 +377,26 @@ VexAbc.Renderer.prototype.endVolta = function() {
   this.state.volta = false;
   this.state.voltaBeginMeasure = -1;
   this.state.voltaText = null;
-}
+};
 
-VexAbc.Renderer.prototype.processGroup = function(dataGroup) {
+VexAbcRenderer.prototype.processGroup = function(dataGroup) {
   var dataGroupEntries = dataGroup.value;
   var beamedNoteGroups = [ [] ];
 
   var validBeamedNoteGroup = false;
 
-  for (var i = 0; i < dataGroupEntries.length; i++) {
+  var i;
+
+  for (i = 0; i < dataGroupEntries.length; i++) {
     var dataGroupEntry = dataGroupEntries[i];
 
     var noteData;
     var note;
     var beamable;
 
-    if (dataGroupEntry.type == "note") {
+    if (dataGroupEntry.type === "note") {
       noteData = this.createStaveNoteForChord([dataGroupEntry]);
-      if (noteData == null) {
+      if (!noteData) {
         continue;
       }
 
@@ -394,9 +404,9 @@ VexAbc.Renderer.prototype.processGroup = function(dataGroup) {
       beamable = noteData.duration.beamable;
 
       validBeamedNoteGroup = true;
-    } else if (dataGroupEntry.type == "chord") {
+    } else if (dataGroupEntry.type === "chord") {
       noteData = this.createStaveNoteForChord(dataGroupEntry.value, dataGroupEntry);
-      if (noteData == null) {
+      if (!noteData) {
         continue;
       }
 
@@ -408,21 +418,21 @@ VexAbc.Renderer.prototype.processGroup = function(dataGroup) {
       this.processGraceNotes(dataGroupEntry, note);
 
       validBeamedNoteGroup = true;
-    } else if (dataGroupEntry.type == "rest") {
+    } else if (dataGroupEntry.type === "rest") {
       this.breakTie();
       this.useBracketedTuplet();
 
       noteData = this.createStaveNoteForRest(dataGroupEntry);
-      if (noteData == null) {
+      if (!noteData) {
         continue;
       }
 
       note = noteData.note;
       beamable = noteData.duration.beamable;
-    } else if (dataGroupEntry.type == "tuplet") {
+    } else if (dataGroupEntry.type === "tuplet") {
       this.beginTuplet(dataGroupEntry);
       continue;
-    } else if (dataGroupEntry.type == "brokenRhythm") {
+    } else if (dataGroupEntry.type === "brokenRhythm") {
       // ignore
       continue;
     } else {
@@ -430,7 +440,7 @@ VexAbc.Renderer.prototype.processGroup = function(dataGroup) {
       continue;
     }
 
-    var voice = this.state.voices[VexAbc.Def.DEFAULT_VOICE_ID];
+    var voice = this.state.voices[VexAbcDef.DEFAULT_VOICE_ID];
     if (!this.state.tuplet) {
       // Tickables inside a tuplet have to be added after creating the tuplet
       voice.addTickable(note);
@@ -438,7 +448,7 @@ VexAbc.Renderer.prototype.processGroup = function(dataGroup) {
 
     var tieEnd = false;
     var tieBegin = false;
-    if (dataGroupEntry.type == "note") {
+    if (dataGroupEntry.type === "note") {
       tieEnd = this.endTie(dataGroupEntry, note);
       tieBegin = this.beginTieIfNeeded(dataGroupEntry, note);
     }
@@ -458,7 +468,7 @@ VexAbc.Renderer.prototype.processGroup = function(dataGroup) {
         beamedNoteGroups.push([]);
       }
 
-      this.useBracketedTuplet();        
+      this.useBracketedTuplet();
 
       validBeamedNoteGroup = false;
     }
@@ -480,9 +490,9 @@ VexAbc.Renderer.prototype.processGroup = function(dataGroup) {
 
     this.elements.beams.push(new Vex.Flow.Beam(beamedNoteGroup));
   }
-}
+};
 
-VexAbc.Renderer.prototype.getVexFlowDuration = function(dataElement, secondaryDataElement) {
+VexAbcRenderer.prototype.getVexFlowDuration = function(dataElement, secondaryDataElement) {
   var duration = dataElement.duration;
   if (!duration) {
     console.log("Duration not available in element: " +
@@ -499,7 +509,7 @@ VexAbc.Renderer.prototype.getVexFlowDuration = function(dataElement, secondaryDa
     noteValue *= secondaryDataElement.duration.noteValue;
   }
 
-  var vexFlowDuration = VexAbc.Util.convertFractionDurationToVexFlowDuration(
+  var vexFlowDuration = VexAbcUtil.convertFractionDurationToVexFlowDuration(
       multiplier, noteValue);
   if (!vexFlowDuration) {
     console.log("Invalid duration: " + multiplier + "/" + noteValue);
@@ -507,9 +517,9 @@ VexAbc.Renderer.prototype.getVexFlowDuration = function(dataElement, secondaryDa
   }
 
   return vexFlowDuration;
-}
+};
 
-VexAbc.Renderer.prototype.createStaveNoteForChord = function(dataNotes, dataChord) {
+VexAbcRenderer.prototype.createStaveNoteForChord = function(dataNotes, dataChord) {
   var chordOctaveShift = 0;
   var chordDuration = null;
   var chordTie = false;
@@ -530,15 +540,18 @@ VexAbc.Renderer.prototype.createStaveNoteForChord = function(dataNotes, dataChor
      length, but if not, the chord duration is that of the first note. */
 
   var vexFlowDuration = this.getVexFlowDuration(dataNotes[0], dataChord);
-  if (vexFlowDuration === null) {
+  if (!vexFlowDuration) {
     console.log("Unsupported note length: " + JSON.stringify(dataChord));
     return null;
   }
 
   var keys = [];
 
-  for (var i = 0; i < dataNotes.length; i++) {
-    var dataNote = dataNotes[i];
+  var i;
+  var dataNote;
+
+  for (i = 0; i < dataNotes.length; i++) {
+    dataNote = dataNotes[i];
     if (chordTie) {
       dataNote.tie = true;
     }
@@ -559,8 +572,8 @@ VexAbc.Renderer.prototype.createStaveNoteForChord = function(dataNotes, dataChor
   // TODO: beam direction should have two modes:
   //   automatic (for single voice on stave) and manual (for multiple voices on the same stave)
 
-  for (var i = 0; i < dataNotes.length; i++) {
-    var dataNote = dataNotes[i];
+  for (i = 0; i < dataNotes.length; i++) {
+    dataNote = dataNotes[i];
 
     for (var j = 0; j < vexFlowDuration.dots; j++) {
       note.addDot(i);
@@ -577,17 +590,18 @@ VexAbc.Renderer.prototype.createStaveNoteForChord = function(dataNotes, dataChor
     note: note,
     duration: vexFlowDuration
   };
-}
+};
 
-VexAbc.Renderer.prototype.createStaveNoteForRest = function(dataRest) {
+VexAbcRenderer.prototype.createStaveNoteForRest = function(dataRest) {
   var vexFlowDuration = this.getVexFlowDuration(dataRest);
 
-  if (vexFlowDuration == null) {
+  if (!vexFlowDuration) {
     console.log("Unsupported rest length: " + JSON.stringify(dataRest));
     return null;
   }
 
   var note;
+  var i;
   
   if (dataRest.spacer) {
     // TODO: FIXME: it should be possible to attach modifiers to spacers
@@ -603,14 +617,14 @@ VexAbc.Renderer.prototype.createStaveNoteForRest = function(dataRest) {
     }
 
     note = new Vex.Flow.StaveNote({
-      keys: [ VexAbc.Util.getRestNoteKeyForClef(this.state.key.clef) ],
+      keys: [ VexAbcUtil.getRestNoteKeyForClef(this.state.key.clef) ],
       duration: vexFlowDuration.value,
       dots: vexFlowDuration.dots,
       type: "r",
       clef: this.state.key.clef
     });
 
-    for (var i = 0; i < vexFlowDuration.dots; i++) {
+    for (i = 0; i < vexFlowDuration.dots; i++) {
       note.addDot(0);
     }
 
@@ -621,17 +635,19 @@ VexAbc.Renderer.prototype.createStaveNoteForRest = function(dataRest) {
     note: note,
     duration: vexFlowDuration
   };
-}
+};
 
-VexAbc.Renderer.prototype.processGraceNotes = function(dataElement, note) {
+VexAbcRenderer.prototype.processGraceNotes = function(dataElement, note) {
   if (dataElement.graceNotes) {
     var notes = dataElement.graceNotes.value;
     var keys = [];
-    for (var i = 0; i < notes.length; i++) {
+    var i;
+
+    for (i = 0; i < notes.length; i++) {
       var dataNote = notes[i];
       keys.push(dataNote.pitch + "/" + dataNote.octave);
     }
-    if (keys.length == 0) {
+    if (keys.length === 0) {
       return;
     }
 
@@ -639,9 +655,9 @@ VexAbc.Renderer.prototype.processGraceNotes = function(dataElement, note) {
 
     note.addGraceNoteGroup(keys);
   }
-}
+};
 
-VexAbc.Renderer.prototype.processModifiers = function(dataElement, note, index) {
+VexAbcRenderer.prototype.processModifiers = function(dataElement, note, index) {
   if (!dataElement.modifiers) {
     return;
   }
@@ -658,9 +674,9 @@ VexAbc.Renderer.prototype.processModifiers = function(dataElement, note, index) 
       console.log("Unknown modifier: " + JSON.stringify(dataModifier));
     }
   }
-}
+};
 
-VexAbc.Renderer.prototype.processDecoration = function(dataDecoration, note, index) {
+VexAbcRenderer.prototype.processDecoration = function(dataDecoration, note, index) {
   var value = dataDecoration.value;
 
   if (value === "none" || value === "nil") {
@@ -668,7 +684,7 @@ VexAbc.Renderer.prototype.processDecoration = function(dataDecoration, note, ind
   }
 
   var vexFlowArticulation =
-      VexAbc.Util.convertAbcDecorationToVexFlowArticulation(value);
+      VexAbcUtil.convertAbcDecorationToVexFlowArticulation(value);
 
   if (vexFlowArticulation) {
     var articulation = new Vex.Flow.Articulation(vexFlowArticulation);
@@ -679,9 +695,9 @@ VexAbc.Renderer.prototype.processDecoration = function(dataDecoration, note, ind
   }
 
   var vexFlowAnnotation =
-      VexAbc.Util.convertAbcDecorationToVexFlowAnnotation(value);
+      VexAbcUtil.convertAbcDecorationToVexFlowAnnotation(value);
   if (vexFlowAnnotation) {
-    var style = VexAbc.Util.getVexFlowAnnotationStyle(vexFlowAnnotation.style);
+    var style = VexAbcUtil.getVexFlowAnnotationStyle(vexFlowAnnotation.style);
     var annotation = this.createAnnotation(vexFlowAnnotation.value, style);
     note.addAnnotation(index, annotation);
     return;
@@ -690,17 +706,17 @@ VexAbc.Renderer.prototype.processDecoration = function(dataDecoration, note, ind
   // TODO: handle decorations rendered as stave modifiers (e.g. segno, coda, ...)
 
   console.log("Unknown decoration: " + dataDecoration.value);
-}
+};
 
-VexAbc.Renderer.prototype.processAnnotation = function(dataAnnotation, note, index) {
+VexAbcRenderer.prototype.processAnnotation = function(dataAnnotation, note, index) {
   var placement = dataAnnotation.placement;
 
   var justification;
   var verticalPosition;
-  if (placement == "left" || placement == "right") {
+  if (placement === "left" || placement === "right") {
     justification = placement;
     verticalPosition = "center-stem";
-  } else if (placement == "above" || placement == "below") {
+  } else if (placement === "above" || placement === "below") {
     justification = "center";
     verticalPosition = placement;
   }
@@ -708,21 +724,21 @@ VexAbc.Renderer.prototype.processAnnotation = function(dataAnnotation, note, ind
   var annotation = this.createAnnotation(dataAnnotation.value,
     null, verticalPosition, justification);
   note.addAnnotation(index, annotation);
-}
+};
 
-VexAbc.Renderer.prototype.processChordSymbol = function(dataChordSymbol, note, index) {
-  var style = VexAbc.Util.getVexFlowAnnotationStyle("chordSymbol");
+VexAbcRenderer.prototype.processChordSymbol = function(dataChordSymbol, note, index) {
+  var style = VexAbcUtil.getVexFlowAnnotationStyle("chordSymbol");
   var annotation = this.createAnnotation(dataChordSymbol.value, style);
   // TODO: placement!
   note.addAnnotation(index, annotation);
-}
+};
 
-VexAbc.Renderer.prototype.beginTuplet = function(dataTuplet) {
+VexAbcRenderer.prototype.beginTuplet = function(dataTuplet) {
   this.endTuplet();
 
   var ratioed = (dataTuplet.timeOf != null);
 
-  if (dataTuplet.timeOf == null) {
+  if (!dataTuplet.timeOf) {
     switch (dataTuplet.tupletNoteCount) {
       case 2:
       case 4:
@@ -736,7 +752,7 @@ VexAbc.Renderer.prototype.beginTuplet = function(dataTuplet) {
       default:
         // TODO: detect complex time in utility method
         if (this.state.meter.multiplier > 3 &&
-            (this.state.meter.multiplier % 3 == 0)) {
+            (this.state.meter.multiplier % 3 === 0)) {
           dataTuplet.timeOf = 3;
         } else {
           dataTuplet.timeOf = 2;
@@ -744,7 +760,7 @@ VexAbc.Renderer.prototype.beginTuplet = function(dataTuplet) {
     }
   }
 
-  if (dataTuplet.actualNoteCount == null) {
+  if (!dataTuplet.actualNoteCount) {
     dataTuplet.actualNoteCount = dataTuplet.tupletNoteCount;
   }
 
@@ -752,9 +768,9 @@ VexAbc.Renderer.prototype.beginTuplet = function(dataTuplet) {
   this.state.tupletNoteGroup = [];
   this.state.tupletBracketNeeded = false;
   this.state.tupletRatioNeeded = ratioed;
-}
+};
 
-VexAbc.Renderer.prototype.addNoteToTupletIfNeeded = function(note) {
+VexAbcRenderer.prototype.addNoteToTupletIfNeeded = function(note) {
   if (this.state.tuplet) {
     var dataTuplet = this.state.tuplet;
     var tupletNoteGroup = this.state.tupletNoteGroup;
@@ -765,15 +781,15 @@ VexAbc.Renderer.prototype.addNoteToTupletIfNeeded = function(note) {
       this.endTuplet();
     }
   }
-}
+};
 
-VexAbc.Renderer.prototype.useBracketedTuplet = function() {
+VexAbcRenderer.prototype.useBracketedTuplet = function() {
   if (this.state.tuplet) {
     this.state.tupletBracketNeeded = true;
   }
-}
+};
 
-VexAbc.Renderer.prototype.endTuplet = function() {
+VexAbcRenderer.prototype.endTuplet = function() {
   if (this.state.tuplet) {
     var dataTuplet = this.state.tuplet;
     var tupletNoteGroup = this.state.tupletNoteGroup;
@@ -786,7 +802,7 @@ VexAbc.Renderer.prototype.endTuplet = function() {
       this.elements.tuplets.push(tuplet);
 
       // Tickables inside a tuplet have to be added after creating the tuplet
-      var voice = this.state.voices[VexAbc.Def.DEFAULT_VOICE_ID];
+      var voice = this.state.voices[VexAbcDef.DEFAULT_VOICE_ID];
       voice.addTickables(tupletNoteGroup);
     }
 
@@ -795,14 +811,14 @@ VexAbc.Renderer.prototype.endTuplet = function() {
     this.state.tupletBracketNeeded = false;
     this.state.tupletRatioNeeded = false;
   }
-}
+};
 
-VexAbc.Renderer.prototype.beginTieIfNeeded = function(dataElement, note) {
+VexAbcRenderer.prototype.beginTieIfNeeded = function(dataElement, note) {
   this.endTie(note);
 
   var beginIndices = [];
 
-  if (dataElement.type == "chord") {
+  if (dataElement.type === "chord") {
     var dataNotes = dataElement.value;
     for (var i = 0; i < dataNotes.length; i++) {
       var dataNote = dataNotes[i];
@@ -810,7 +826,7 @@ VexAbc.Renderer.prototype.beginTieIfNeeded = function(dataElement, note) {
         beginIndices.push(i);
       }
     }
-  } else if (dataElement.type == "note") {
+  } else if (dataElement.type === "note") {
     if (dataElement.tie) {
       beginIndices.push(0);
     }
@@ -819,7 +835,7 @@ VexAbc.Renderer.prototype.beginTieIfNeeded = function(dataElement, note) {
     return false;
   }
 
-  if (beginIndices.length == 0) {
+  if (beginIndices.length === 0) {
     return false;
   }
 
@@ -830,34 +846,32 @@ VexAbc.Renderer.prototype.beginTieIfNeeded = function(dataElement, note) {
   };
 
   return true;
-}
+};
 
-VexAbc.Renderer.prototype.breakTie = function() {
+VexAbcRenderer.prototype.breakTie = function() {
   if (this.state.tie) {
     this.state.tie = null;
   }
-}
+};
 
-VexAbc.Renderer.prototype.endTie = function(dataElement, note) {
+VexAbcRenderer.prototype.endTie = function(dataElement, note) {
   if (!this.state.tie) {
     return false;
   }
-
-  var endIndices = [];
 
   var beginDataNotes;
   var endDataNotes;
 
   var beginDataElement = this.state.tie.beginDataElement;
-  if (beginDataElement.type == "chord") {
+  if (beginDataElement.type === "chord") {
     beginDataNotes = beginDataElement.value;
-  } else if (beginDataElement.type == "note") {
+  } else if (beginDataElement.type === "note") {
     beginDataNotes = [ beginDataElement ];
   }
 
-  if (dataElement.type == "chord") {
+  if (dataElement.type === "chord") {
     endDataNotes = dataElement.value;
-  } else if (dataElement.type == "note") {
+  } else if (dataElement.type === "note") {
     endDataNotes = [ dataElement ];
   } else {
     console.log("Cannot end tie on element type: " + dataElement.type);
@@ -865,7 +879,7 @@ VexAbc.Renderer.prototype.endTie = function(dataElement, note) {
   }
 
   var equalPitchIndices =
-      VexAbc.Util.findEqualDataNotePitchIndices(beginDataNotes, endDataNotes,
+      VexAbcUtil.findEqualDataNotePitchIndices(beginDataNotes, endDataNotes,
         this.state.tie.beginIndices);
 
   var tie = new Vex.Flow.StaveTie({
@@ -879,11 +893,11 @@ VexAbc.Renderer.prototype.endTie = function(dataElement, note) {
   this.state.tie = null;
 
   return true;
-}
+};
 
-VexAbc.Renderer.prototype.transform = function(data) {
+VexAbcRenderer.prototype.transform = function(data) {
   var key = this.getInformationFieldValue(data, "K");
-  if (key == null) {
+  if (!key) {
     key = {
       key: "C",
       clef: "treble"
@@ -905,9 +919,9 @@ VexAbc.Renderer.prototype.transform = function(data) {
   */
 
   this.newStave();
-  this.newVoice(VexAbc.Def.DEFAULT_VOICE_ID);
+  this.newVoice(VexAbcDef.DEFAULT_VOICE_ID);
 
-  this.elements.staves.push({ 
+  this.elements.staves.push({
     stave: this.state.stave,
     voices: this.state.voices
   });
@@ -917,15 +931,15 @@ VexAbc.Renderer.prototype.transform = function(data) {
   for (var i = 0; i < body.length; i++) {
     var dataElement = body[i];
 
-    if (dataElement.type == "informationField") {
+    if (dataElement.type === "informationField") {
       this.processInformationField(dataElement);
-    } else if (dataElement.type == "bar") {
+    } else if (dataElement.type === "bar") {
       this.processBar(dataElement);
-    } else if (dataElement.type == "group") {
+    } else if (dataElement.type === "group") {
       this.processGroup(dataElement);
-    } else if (dataElement.type == "variantEnding") {
+    } else if (dataElement.type === "variantEnding") {
       this.beginVoltaIfNeeded(dataElement);
-    } else if (dataElement.type == "lineBreak") {
+    } else if (dataElement.type === "lineBreak") {
       // TODO: implement
     } else {
       console.log("Unknown element: " + JSON.stringify(dataElement));
@@ -934,9 +948,9 @@ VexAbc.Renderer.prototype.transform = function(data) {
 
   // Apply defaults for the last stave
   this.applyStaveDefaults();
-}
+};
 
-VexAbc.Renderer.prototype.render = function(canvasElement) {
+VexAbcRenderer.prototype.render = function(canvasElement) {
   var renderer = new Vex.Flow.Renderer(
      canvasElement, Vex.Flow.Renderer.Backends.CANVAS);
   var context = renderer.getContext();
@@ -956,13 +970,14 @@ VexAbc.Renderer.prototype.render = function(canvasElement) {
 
   var staves = this.elements.staves;
 
-  for (var i = 0; i < staves.length; i++) {
+  var i;
+  for (i = 0; i < staves.length; i++) {
     var stave = staves[i].stave;
-    var voice = staves[i].voices[VexAbc.Def.DEFAULT_VOICE_ID];
+    var voice = staves[i].voices[VexAbcDef.DEFAULT_VOICE_ID];
 
     if ((i > 0) && (i >= staves.length - 1)) {
       // Do not render last bar if it is empty
-      if (voice.getTicksUsed().value() == 0) {
+      if (voice.getTicksUsed().value() === 0) {
         // TODO: Get rid of extra vertical space possibly allocated
         continue;
       }
@@ -970,28 +985,29 @@ VexAbc.Renderer.prototype.render = function(canvasElement) {
 
     stave.setContext(context).draw();
 
-    var formatter = new Vex.Flow.Formatter().
-      joinVoices([voice]).formatToStave([voice], stave);
+    var formatter = new Vex.Flow.Formatter();
+    formatter.joinVoices([voice]).formatToStave([voice], stave);
 
     voice.draw(context, stave);
-  }  
+  }
 
   var beams = this.elements.beams;
-  for (var i = 0; i < beams.length; i++) {
+  for (i = 0; i < beams.length; i++) {
     var beam = beams[i];
     beam.setContext(context).draw();
   }
 
   var tuplets = this.elements.tuplets;
-  for (var i = 0; i < tuplets.length; i++) {
+  for (i = 0; i < tuplets.length; i++) {
     var tuplet = tuplets[i];
     tuplet.setContext(context).draw();
   }
 
   var ties = this.elements.ties;
-  for (var i = 0; i < ties.length; i++) {
+  for (i = 0; i < ties.length; i++) {
     var tie = ties[i];
     tie.setContext(context).draw();
   }
-}
+};
 
+module.exports = VexAbcRenderer;

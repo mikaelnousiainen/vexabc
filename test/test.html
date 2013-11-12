@@ -4,18 +4,17 @@
     <meta charset="utf-8">
     <title>VexABC test suite</title>
 
-    <link rel="stylesheet" href="lib/bootstrap.css">
-    <link rel="stylesheet" href="lib/qunit-1.10.0.css">
+    <link rel="stylesheet" href="../lib/managed/bootstrap/bootstrap.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../lib/managed/qunit/qunit/qunit.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="test.css">
 
-    <script type="text/javascript" src="../lib/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="lib/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../lib/peg-0.7.0.min.js"></script>
-    <script type="text/javascript" src="../lib/vexflow-min.js"></script>
+    <script type="text/javascript" src="../lib/managed/jquery/jquery.js"></script>
 
-    <script type="text/javascript" src="../src/vexabc.js"></script>
-    <script type="text/javascript" src="../src/vexabc-common.js"></script>
-    <script type="text/javascript" src="../src/vexabc-renderer.js"></script>
+    <script type="text/javascript" src="../dist/underscore.js"></script>
+    <script type="text/javascript" src="../dist/vexflow.js"></script>
+
+    <script type="text/javascript" src="../dist/vexabc-pegjs-parser.js"></script>
+    <script type="text/javascript" src="../dist/vexabc.js"></script>
 
     <script type="text/javascript" src="test.js"></script>
   </head>
@@ -25,26 +24,14 @@
     <div id="qunit"></div>
     <div id="vexabc-test-output"></div>
 
-    <script src="lib/qunit-1.10.0.js"></script>
-
-    <script>
-      var moduleDefinitions = [];
-      var testDefinitions = [];
-    </script>
+    <script src="../lib/managed/qunit/qunit/qunit.js"></script>
 
     <script src="test-data.js"></script>
 
     <script>
-      function runTests(parserDefinitionText) {
+      function runTests() {
         var i;
-        var testSuite;
-
-        try {
-          testSuite = new VexAbc.TestSuite(parserDefinitionText, "#vexabc-test-output");
-        } catch (e) {
-          $("#error").html("<code>Error in parser definition: " + e.message + "</code>");
-          return;
-        }
+        var testSuite = new VexAbcTestSuite("#vexabc-test-output");
 
         for (i = 0; i < testDefinitions.length; i++) {
           testSuite.registerTest(testDefinitions[i]);
@@ -55,18 +42,8 @@
         testSuite.run();
       }
 
-      $(document).ready(function() {
-        $.ajax({
-          url: "../src/vexabc.pegjs",
-          dataType: "text",
-          cache: false,
-          success: function(data) {
-            runTests(data);
-          },
-          error: function(jqXHR, textStatus, errorThrown) {
-            $("#error").html("<code>Error loading parser definition: " + errorThrown + "</code>");
-          }
-        });
+      $(document).ready(function() { 
+        runTests();
       });
     </script>
   </body>

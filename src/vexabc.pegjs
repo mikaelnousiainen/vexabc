@@ -1,7 +1,7 @@
 /*
  * VexABC - ABC notation parser and renderer for VexFlow
  *
- * Copyright (c) 2012 Mikael Nousiainen
+ * Copyright (c) 2012-2013 Mikael Nousiainen
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -306,7 +306,7 @@ keyInformationFieldValue "key information field value"
         part:keyInformationFieldValuePart { return part; })* {
   var field = firstPart;
   for (var i = 0; i < otherParts.length; i++) {
-    $.extend(field, otherParts[i]);
+    _.extend(field, otherParts[i]);
   }
   return field;
 }
@@ -417,7 +417,7 @@ repeat "repeat"
     type: "bar",
     repeat: true
   };
-  $.extend(value, repeatType);
+  _.extend(value, repeatType);
   return value;
 }
 
